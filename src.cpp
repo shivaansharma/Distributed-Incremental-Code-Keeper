@@ -42,21 +42,37 @@ int main(int argc ,char* argv[]){
     case commands :: add :
         Errors :: dBug("add Called");
         break;
-    case commands :: catFile :{
-        if(argc<4){
-            Errors ::fatal("command error , format : ./src catFile <Type> <hash / object>");
-        }
-        if(argv[2] == "help"){
-            std :: cout<<" format : ./src catFile <Type> <hash / object>";
-            std :: exit(EXIT_FAILURE);
-        }
-        objectType type {matchType(argv[2])};
-        if(type == objectType :: BADTYPE){
-            Errors :: fatal("wrong type");
-        }
-        std :: string hash_160_bit{argv[3]};
-        break;
+    case commands::catFile: {
+    if (argc < 4) {
+        Errors::fatal("format: ./src catFile <type> <hash/object>");
     }
+
+    std::string typeStr = argv[2];
+
+    if (typeStr == "help") {
+        std::cout << "format: ./src catFile <type> <hash/object>\n";
+        std::exit(EXIT_SUCCESS);
+    }
+
+    objectType type = matchType(typeStr);
+    if (type == objectType::BADTYPE) {
+        Errors::fatal("wrong type");
+    }
+
+    std::string hash = argv[3];
+
+    // repo find
+    auto repoOpt = repoFind();
+    if (!repoOpt.has_value()) {
+        Errors::fatal("not a git repository");
+    }
+
+    // 🔥 ACTUALLY CALL catFile
+   OBJECTHELPER ::catFile(repoOpt.value(),hash);
+
+    break;
+}
+
     case commands :: checkIgnore :
         Errors :: dBug("checkIgnore Called");
         break;
@@ -69,14 +85,24 @@ int main(int argc ,char* argv[]){
     case commands :: hashObject :
         Errors :: dBug("hashObject Called");
         break;
-    case commands :: init :{
-        if(argc < 3) Errors :: fatal("The path was not passed");
-        if(argv[3] == "help") std :: cout<<"enter the path to make an empty repo";
-        std :: filesystem :: path p {argv[2]};
-        REPOHELPER :: repoCreate(p);
-        Errors :: dBug("init Called");
-        break;
+case commands::init: {
+    if (argc < 3) {
+        Errors::fatal("The path was not passed");
     }
+
+    // Check if the user is asking for help at argv[2]
+    std::string arg2 = argv[2];
+    if (arg2 == "-help") {
+        std::cout << "Usage: init <path_to_repo>" << std::endl;
+        break; // Exit the case early
+    }
+
+    // If not help, proceed with the path
+    std::filesystem::path p{arg2};
+    repoCreate(p);
+    Errors::dBug("init Called");
+    break;
+}
     case commands :: log :
         Errors :: dBug("log Called");
         break;

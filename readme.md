@@ -35,3 +35,4 @@ The og article is written in <i><b>python</b></i> this is my implementation of i
   <b>MATH</b><br>
    ill be using 8 bit integer for the implementtaion uint_8
    so 448/8 = 56 ill have to divide it in 56 bytes and then additional paddind would be used 
+

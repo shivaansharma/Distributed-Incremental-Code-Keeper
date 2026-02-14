@@ -8,7 +8,7 @@
 #include <algorithm>
 #include <stdexcept>
 #include <zlib.h>
-
+class Repo;
 namespace OBJECTHELPER {
 
 inline std::string zlibDecompressFile(const std::filesystem::path& path)
@@ -59,7 +59,7 @@ inline std::variant<GitBlob,GitTag,GitTree,GitCommit> objectRead(Repo repo, cons
     std::string dir  = shaHash.substr(0, 2);
     std::string file = shaHash.substr(2);
 
-    std::filesystem::path path = REPOHELPER::repoPath(repo, "objects", dir, file);
+    std::filesystem::path path = repoPath(repo, "objects", dir, file);
 
     if (!std::filesystem::exists(path))  Errors::fatal("path does not exist");
 
@@ -81,7 +81,7 @@ inline std::variant<GitBlob,GitTag,GitTree,GitCommit> objectRead(Repo repo, cons
 
     std::string payload(nullIt + 1, raw.end());
 
-    if (fmt == "commit") Errors::fatal("call unimplemented blob");//return GitCommit(payload);
+    if (fmt == "commit") Errors::fatal("call unimplemented commit");//return GitCommit(payload);
     if (fmt == "tree") Errors::fatal("call unimplemented tree"); // return GitTree(payload);
     if (fmt == "tag")  Errors::fatal("call unimplemented tag");  //return GitTag(payload);
     if (fmt == "blob")   return GitBlob(payload);
@@ -89,7 +89,7 @@ inline std::variant<GitBlob,GitTag,GitTree,GitCommit> objectRead(Repo repo, cons
     Errors::fatal("unknown object type: " + fmt);
 }
 
-inline void writeObject(GitObject& obj, Repo repo)
+inline std :: string writeObject(GitObject& obj, Repo repo)
 {
     std::string data = obj.serialize();
 
@@ -109,14 +109,14 @@ inline void writeObject(GitObject& obj, Repo repo)
     std::string file = sha.substr(2);
 
     std::filesystem::path objDir =
-        REPOHELPER::repoPath(repo, "objects", dir);
+        repoPath(repo, "objects", dir);
 
     std::filesystem::create_directories(objDir);
 
     std::filesystem::path objPath = objDir / file;
 
     if (std::filesystem::exists(objPath))
-        return;
+        return " ";
 
     // --- zlib compress ---
     uLongf outSize = compressBound(result.size());
@@ -138,6 +138,7 @@ inline void writeObject(GitObject& obj, Repo repo)
         Errors::fatal("cannot write object");
 
     out.write(compressed.data(), compressed.size());
+    return sha;
 }
 
 std :: string findObject(Repo repo ,std :: string name){
@@ -158,12 +159,63 @@ else if (auto* tag = std::get_if<GitTag>(&obj)) {
     Errors::fatal("tag not supported");
 }
 }
-void cmdCatFile(){
-    if(!REPOHELPER :: repoFind().has_value()){
+
+
+void cmdCatFile(std :: string name){
+    if(! repoFind().has_value()){
         Errors :: fatal("repoFind has no value");
     }
-    Repo r = REPOHELPER :: repoFind().value();
-    
+    Repo r =repoFind().value();
+    catFile(r,name);
+}
+std::string objectHash(const std::filesystem::path& path,
+                       objectType type,
+                       Repo* repo)
+{
+    // read file
+    std::ifstream f(path, std::ios::binary);
+    if (!f) Errors::fatal("cannot open file");
+
+    std::string data(
+        (std::istreambuf_iterator<char>(f)),
+         std::istreambuf_iterator<char>()
+    );
+
+    // create object (POLYMORPHIC)
+    GitObject *obj = nullptr ;
+
+    if      (type == objectType::BLOB)   obj = new  GitBlob(data);
+    else if (type == objectType::TREE)   Errors::fatal("Unimplemented object tree");
+    else if (type == objectType::COMMIT) Errors::fatal("Unimplemented object commit");
+    else if (type == objectType::TAG)    Errors::fatal("Unimplemented object tag");
+    else Errors::fatal("unknown object type");
+
+    // hash + write
+    std::string sha = writeObject(*obj, *repo);
+
+    delete obj;   // important
+    return sha;
+}
+
+void cmdHashFile(std::filesystem::path& path,
+                 objectType type,
+                 bool write)
+{
+    Repo* repo = nullptr;
+
+    if (write) {
+        auto repoOpt = repoFind();
+        if (!repoOpt) Errors::fatal("not a git repository");
+        repo = &*repoOpt;
+    }
+
+    std::cout << objectHash(path, type, repo) << '\n';
+}
+
+
+
+std :: string object_find(Repo r , std :: string name){
+    return name;
 }
 
 }

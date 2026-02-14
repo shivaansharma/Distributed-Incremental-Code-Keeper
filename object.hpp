@@ -10,7 +10,7 @@ public:
 };
 
 
-class GitBlob : GitObject{
+class GitBlob : public GitObject{
     public :
     GitBlob(){
         fmt = "blob";
@@ -29,12 +29,30 @@ class GitBlob : GitObject{
     std::string blobData;
 };
 
-class GitTag :GitObject{
-
+class GitTag :public GitObject{
+    public :
+      std :: string serialize () override{
+        return "";
+    }
+    void deserialize(std::string& data) override {
+        
+    }
 };
-class GitTree :GitObject{
-
+class GitTree :public GitObject{
+    public :
+      std :: string serialize () override{
+        return "";
+    }
+    void deserialize(std::string& data) override {
+        
+    }
 };
-class GitCommit :GitObject{
-
+class GitCommit :public GitObject{
+    public :
+      std :: string serialize () override{
+        return "";
+    }
+    void deserialize(std::string& data) override {
+        
+    }
 };

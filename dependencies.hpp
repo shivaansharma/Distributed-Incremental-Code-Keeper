@@ -13,9 +13,10 @@
 #include"object.hpp"
 #include "sha.hpp"
 #include <zlib.h>
-#include "objectHelper.hpp"
+
 #include "errors.hpp"
 #include "repo.hpp"
+#include "objectHelper.hpp"
 #endif
 
 
