@@ -1,0 +1,13 @@
+a@shivaans-MacBook-Air cppGit % cd "/Users/shivaansharma/Developer/cppGit/" && clang++ -std=c++17 test.cpp -o test && ./test
+hello my name is shivaani am a devhello my name is shivaani am a dev
+shivaansharma@shivaans-MacBook-Air cppGit % cla
+ng++ -std=c++17 test.cpp sha.hpp
+shivaansharma@shivaans-MacBook-Air cppGit % clang++ -std=c++17 test.cpp sha.hpp -o shaTest                                              
+clang++: error: cannot specify -o when generating multiple output files
+shivaansharma@shivaans
+-MacBook-Air cppGit % clang++ -std=c++17 test.cpp sha.hpp -o shaTEST
+clang++: error: cannot specify -o when generating multiple output files
+shivaansharma@shivaans-MacBook-Air cppGit % cd "/Users/shivaansharma/Developer/cppGit/" && clang++ -std=c++17 test.cpp -o test && ./test
+hello my name is shivaani am a devhello my name is shivaani am a dev
+shivaansharma@
+shivaans-MacBook-Air cppGit % 
