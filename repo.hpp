@@ -73,7 +73,7 @@ class Repo {
 
 
 template<typename...Parts>
-std :: filesystem :: path repoPath (Repo &repo ,Parts ...parts){
+std :: filesystem :: path repoPath (Repo& repo ,Parts ...parts){
     std :: filesystem :: path p = repo.gitDir;    //creates path
     ((p/=parts),...);
     return p;

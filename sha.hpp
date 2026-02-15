@@ -19,8 +19,7 @@ class SHA {
     }
 
 public:
-    SHA(const std::filesystem::path& p) : path(p) {
-        readFile();
+    SHA(const std::string& data) : content(data ){
         preprocess();
         compute();
     }
@@ -30,27 +29,16 @@ public:
     }
 
 private:
-    void readFile() {
-        std::ifstream input(path, std::ios::binary);
-        if (!input) {
-            throw std::runtime_error("Failed to open file");
-        }
-
-        content.assign(
-            std::istreambuf_iterator<char>(input),
-            std::istreambuf_iterator<char>()
-        );
-    }
-    void preprocess() {
+   
+   void preprocess() {
+        // 2. This now uses the actual length of your Git object
         uint64_t bitLen = static_cast<uint64_t>(content.size()) * 8;
-
+        
         content.push_back(static_cast<char>(0x80));
-
         while (content.size() % 64 != 56) {
             content.push_back(static_cast<char>(0x00));
         }
 
-        // append original length (64-bit big-endian)
         for (int i = 7; i >= 0; --i) {
             content.push_back(static_cast<char>((bitLen >> (i * 8)) & 0xFF));
         }

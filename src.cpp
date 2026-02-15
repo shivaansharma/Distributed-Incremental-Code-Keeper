@@ -82,9 +82,43 @@ int main(int argc ,char* argv[]){
     case commands :: commit :
         Errors :: dBug("commit Called");
         break;
-    case commands :: hashObject :
-        Errors :: dBug("hashObject Called");
-        break;
+    case commands::hashObject: {
+    if (argc < 5)
+        Errors::fatal("usage: hash-object [-w] -t TYPE FILE");
+
+    bool write = false;
+    int i = 2;
+
+    // optional -w
+    if (std::string(argv[i]) == "-w") {
+        write = true;
+        i++;
+    }
+
+    // must be -t
+    if (std::string(argv[i]) != "-t")
+        Errors::fatal("usage: hash-object [-w] -t TYPE FILE");
+    i++;
+
+    if (i >= argc)
+        Errors::fatal("missing object type");
+
+    objectType obj = matchType(argv[i]);
+    if (obj == objectType::BADTYPE)
+        Errors::fatal("object not supported");
+    i++;
+
+    if (i >= argc)
+        Errors::fatal("missing file");
+
+    std::filesystem::path path{argv[i]};
+
+    OBJECTHELPER::cmdHashFile(path, obj, write);
+
+    Errors::dBug("hashObject Called");
+    break;
+}
+
 case commands::init: {
     if (argc < 3) {
         Errors::fatal("The path was not passed");

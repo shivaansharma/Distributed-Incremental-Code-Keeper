@@ -89,10 +89,11 @@ inline std::variant<GitBlob,GitTag,GitTree,GitCommit> objectRead(Repo repo, cons
     Errors::fatal("unknown object type: " + fmt);
 }
 
-inline std :: string writeObject(GitObject& obj, Repo repo)
+inline std :: string writeObject(GitObject& obj, Repo* repo)
 {
+    Errors :: dBug("le bhaiiye ompho in Write Object");
+   
     std::string data = obj.serialize();
-
     std::string result;
     result.reserve(obj.fmt.size() + 1 + 20 + 1 + data.size());
 
@@ -101,22 +102,24 @@ inline std :: string writeObject(GitObject& obj, Repo repo)
     result += std::to_string(data.size());
     result.push_back('\0');
     result += data;
+    
 
     SHA shaObj(result);
     std::string sha = shaObj.getHash();
-
+    if (repo == nullptr) {
+        return sha;
+    }
+    // Errors :: dBug(sha);
     std::string dir  = sha.substr(0, 2);
     std::string file = sha.substr(2);
 
-    std::filesystem::path objDir =
-        repoPath(repo, "objects", dir);
+    std::filesystem::path objDir = repoPath(*repo, "objects", dir);
 
     std::filesystem::create_directories(objDir);
 
     std::filesystem::path objPath = objDir / file;
 
-    if (std::filesystem::exists(objPath))
-        return " ";
+    if (std::filesystem::exists(objPath)) return sha;
 
     // --- zlib compress ---
     uLongf outSize = compressBound(result.size());
@@ -138,6 +141,7 @@ inline std :: string writeObject(GitObject& obj, Repo repo)
         Errors::fatal("cannot write object");
 
     out.write(compressed.data(), compressed.size());
+    std :: cout <<"sha is : "<<sha;
     return sha;
 }
 
@@ -173,14 +177,14 @@ std::string objectHash(const std::filesystem::path& path,
                        Repo* repo)
 {
     // read file
+    Errors :: dBug("le bhaiiye ompho IN objestHash");
     std::ifstream f(path, std::ios::binary);
     if (!f) Errors::fatal("cannot open file");
-
     std::string data(
         (std::istreambuf_iterator<char>(f)),
          std::istreambuf_iterator<char>()
     );
-
+    
     // create object (POLYMORPHIC)
     GitObject *obj = nullptr ;
 
@@ -191,24 +195,24 @@ std::string objectHash(const std::filesystem::path& path,
     else Errors::fatal("unknown object type");
 
     // hash + write
-    std::string sha = writeObject(*obj, *repo);
-
+    std::string sha = writeObject(*obj, repo);
+    Errors :: dBug (sha);
     delete obj;   // important
     return sha;
 }
 
 void cmdHashFile(std::filesystem::path& path,
                  objectType type,
-                 bool write)
+                 bool write = false)
 {
     Repo* repo = nullptr;
-
+     auto repoOpt = repoFind();
+    std::cerr << "DEBUG: gitDir set to: " << repoOpt.value().gitDir << std::endl;
     if (write) {
-        auto repoOpt = repoFind();
         if (!repoOpt) Errors::fatal("not a git repository");
-        repo = &*repoOpt;
+        repo = &repoOpt.value();
     }
-
+    Errors :: dBug("le bhaiiye ompho in cmdHashFile");
     std::cout << objectHash(path, type, repo) << '\n';
 }
 
