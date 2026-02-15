@@ -6,7 +6,7 @@ This project is being created for me to understand cpp to a better level get how
 tools used
 <ul>
 <li>Make
-<li>GDB
+<li>LLDB
 <li>Valgrind
 <li>C++ 17
 </ul>
