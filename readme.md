@@ -22,9 +22,10 @@ The og article is written in <i><b>python</b></i> this is my implementation of i
 
  ### Implementing the sha 1 function ###
  <span>
-   SHA stands for secure hash algo <br>
-   it creates a 160 bit digest , renders as a 40 digit hexadecimal
+SHA stands for Secure Hash Algorithm.<br>
+SHA-1 produces a 160-bit digest, which is rendered as a 40-character hexadecimal string.
    <br>
+   <b>Algorithm Overview</b>
    <ol>
    <li>break the input int n parts 448 bits each
    <li> add a 64 bit padding to each part to make them 512 bits
@@ -35,4 +36,42 @@ The og article is written in <i><b>python</b></i> this is my implementation of i
   <b>MATH</b><br>
    ill be using 8 bit integer for the implementtaion uint_8
    so 448/8 = 56 ill have to divide it in 56 bytes and then additional paddind would be used 
+  <br> 
+  <b>Problems faced</b>
+  <br> 
+  There where some issues with the sha 1 first , i mostly vibe coded it , but got the understanding how it works ,
+  the problem was it was ment to take in a file path but turns out it was not needed fixed that rest is the standard algo
 
+### Git Repo and the init command ###
+ note -> when i say git it means dick (using git is causing name confilcts )
+<ol>
+<li>A git repo is made up of two things a work Tree and a git directory 
+   <ul>
+   <li>
+   <b>Work Tree -</b> where the files ment to be version controlled live
+   </li>
+   <li>
+   <b>Git dir -</b> where Git stores its own data 
+   </li>
+   </ul>
+</li>
+<li>
+   <b>Git dir compries of</b>
+   <ul>
+   <li>objects</li>
+   <li>refs
+    <ul>
+    <li>heads</li>
+    <li>tags</li>
+    </ul>
+   </li>
+   <li>HEAD</li>
+   <li>config -> holdes ini like files </li>
+   <li>description -> holdes description</li>
+   <ul>
+</li>
+
+</ol>
+
+
+hello from new branch
