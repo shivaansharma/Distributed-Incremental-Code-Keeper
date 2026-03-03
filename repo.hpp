@@ -42,7 +42,7 @@ class Repo {
     Repo(std :: string path , bool force = false)
     :
     workTree{std :: filesystem :: path (path)},
-    gitDir{std :: filesystem :: path (path)/".git"},
+    gitDir{std :: filesystem :: path (path)/".dick"},
     conf("")
     {
         if(! std :: filesystem :: is_directory(workTree)){
@@ -124,7 +124,7 @@ std :: filesystem :: path repoCreate (std :: filesystem :: path path){
         std::filesystem::create_directories(path);
     }
 
-     std::filesystem::create_directories(path / ".git");
+     std::filesystem::create_directories(path / ".dick");
      Repo repo {path,true};
     repoDir(repo,true,"branches");
     repoDir(repo,true,"objects");
@@ -167,7 +167,7 @@ std::string repoDefaultConfig() {
 }
 std :: optional<Repo> repoFind(std :: filesystem :: path p = "." , bool req = true){
     std :: filesystem :: path fullPath {std :: filesystem :: canonical(p)};
-    if(std :: filesystem :: is_directory(fullPath/".git")) return Repo(fullPath);
+    if(std :: filesystem :: is_directory(fullPath/".dick")) return Repo(fullPath);
 
 
      std :: filesystem :: path parent {std :: filesystem :: canonical(p/"..")};
