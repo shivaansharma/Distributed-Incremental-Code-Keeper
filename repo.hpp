@@ -174,7 +174,7 @@ std :: optional<Repo> repoFind(std :: filesystem :: path p = "." , bool req = tr
 
      if(parent == fullPath){
         if(req){
-            Errors :: fatal ("No git directory.");
+            Errors :: fatal ("No dick directory.");
         }else {
             return std :: nullopt;
         }

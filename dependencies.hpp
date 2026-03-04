@@ -13,7 +13,7 @@
 #include"object.hpp"
 #include "sha.hpp"
 #include <zlib.h>
-
+#include <cassert>
 #include "errors.hpp"
 #include "repo.hpp"
 #include "objectHelper.hpp"

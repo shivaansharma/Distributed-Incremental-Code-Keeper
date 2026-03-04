@@ -73,5 +73,7 @@ SHA-1 produces a 160-bit digest, which is rendered as a 40-character hexadecimal
 
 </ol>
 
-
-hello from new branch
+the commit oject is just a simplified version of the email object as specified in RFC 2822
+ key-value pairs
+ with space as the key/value separator
+  ends with the commit message
