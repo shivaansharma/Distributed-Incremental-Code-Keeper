@@ -222,6 +222,41 @@ std :: string object_find(Repo r , std :: string name){
     return name;
 }
 
+std :: unordered_map<std :: string,std :: vector<std::string>> kvlm (
+    std :: string &raw , 
+    int start = 0 ,std :: unordered_map<std :: string,
+    std :: vector<std :: string>>*dict=nullptr){
+        if (dict  == nullptr) dict = new std :: unordered_map<std :: string,std :: vector<std :: string>>;
+        size_t space = raw.find(' ',start);
+        size_t newLine = raw.find('\n',start);
+        if(space == std :: string :: npos || newLine < space){
+            assert(newLine == start);
+            (*dict)[""].push_back(raw.substr(start+1));
+            return *dict;
+        }
+        std::string key = raw.substr(start, space - start);
+        size_t end {newLine};
+        while (true) {
+            end = raw.find('\n',end+1);
+            if(raw[end+1] != ' ') break;
+        }
+
+        std::string value = raw.substr(space + 1, end - space - 1);
+        size_t pos = 0;
+        while ((pos = value.find("\n ", pos)) != std::string::npos) {
+         value.replace(pos, 2, "\n");
+        }
+        if (dict->find(key) != dict->end()) {
+             (*dict)[key].push_back(value);
+        }
+        else {
+          (*dict)[key] = {value};
+        }
+
+        return kvlm(raw, end + 1, dict);
+}
+    
+
 }
 
 
